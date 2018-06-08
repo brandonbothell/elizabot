@@ -50,7 +50,7 @@ module.exports = class QueueCommand extends commando.Command {
       msg.channel.send('There is nothing to show here.');
       return msg.delete()
     }
-    let songs = userQueue.songs.map(song => `**-** ${song.title}`)
+    let songs = userQueue.songs.map(song => `**-** [${song.title}](${song.url})`)
     let pages = new Map()
     let page = 1
     for (let i = 0; i < songs.length; i++) {

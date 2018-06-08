@@ -92,7 +92,7 @@ module.exports = class PlayCommand extends commando.Command {
       }
       handleVideo(video, user, msg)
       try {
-        user.send(`**${msg.author.username}** has requested for you to sing **${Util.escapeMarkdown(video.title)}** in ${msg.guild.name}.`)
+        user.send(`**${msg.author.username}** has requested for you to sing **${Util.escapeMarkdown(video.title)}** in **${msg.guild.name}**.`)
       } catch (err) {
 
       }

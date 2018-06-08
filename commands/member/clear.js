@@ -13,7 +13,7 @@ module.exports = class StopCommand extends commando.Command {
       aliases: ['clearqueue'],
       group: 'member',
       memberName: 'stop',
-      description: 'Clear the Eliza-queue for the server.',
+      description: 'Clear the Eliza-queue for the user.',
       details: oneLine`
                 This command is used to skip every song in
                 the current Eliza-queue.
@@ -24,7 +24,7 @@ module.exports = class StopCommand extends commando.Command {
   }
 
   async run(msg) {
-    const serverQueue = queue.get(msg.guild.id);
+    const serverQueue = queue.get(msg.author.id);
 
     if (!serverQueue) {
       msg.channel.send('There is nothing in the queue that I could remove for you.')

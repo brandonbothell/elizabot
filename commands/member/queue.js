@@ -25,7 +25,14 @@ module.exports = class QueueCommand extends commando.Command {
 
       args: [
         {
-          key: 'arg',
+          key: 'user',
+          label: 'user',
+          prompt: 'Who\'s queue would you like to look at?',
+          type: 'user',
+          infinite: false,
+        },
+        {
+          key: 'pageArg',
           label: 'page',
           prompt: 'What page would you like to look at?',
           type: 'integer',
@@ -36,14 +43,14 @@ module.exports = class QueueCommand extends commando.Command {
     });
   }
 
-  async run(msg, { arg }) {
-    let pageNum = arg
-    const serverQueue = queue.get(msg.guild.id);
-    if (!serverQueue) {
-      msg.channel.send('There is nothing playing.');
+  async run(msg, { pageArg, user }) {
+    let pageNum = pageArg
+    const userQueue = queue.get(user.id);
+    if (!userQueue) {
+      msg.channel.send('There is nothing to show here.');
       return msg.delete()
     }
-    let songs = serverQueue.songs.map(song => `**-** ${song.title}`)
+    let songs = userQueue.songs.map(song => `**-** ${song.title}`)
     let pages = new Map()
     let page = 1
     for (let i = 0; i < songs.length; i++) {
@@ -62,9 +69,9 @@ module.exports = class QueueCommand extends commando.Command {
     }
     let realDesc = stripIndents`
 			${pages.get(pageNum)}
-			**Now singing:** ${serverQueue.nowSinging}`
+			**Now singing:** ${userQueue.nowSinging}`
     msg.channel.send(ec(
-      "#4286F4", { "name": msg.author.username, "icon_url": client.user.displayAvatarURL, "url": null }, 'Song Queue:', realDesc,
+      "#4286F4", { "name": msg.author.username, "icon_url": client.user.displayAvatarURL, "url": null }, `${user.username}'s Queue:`, realDesc,
       [],
       { "text": `Page ${pageNum}/${pages.size}. View different pages with ${msg.guild.commandPrefix}queue [number].`, "icon_url": null },
       { "thumbnail": null, "image": null }, false

@@ -26,6 +26,13 @@ module.exports = class PlayCommand extends commando.Command {
 
       args: [
         {
+          key: 'user',
+          label: 'user to request to sing',
+          prompt: 'Who would you like to request to sing?',
+          type: 'user',
+          infinite: false
+        },
+        {
           key: 'link',
           label: 'youtube link or term',
           prompt: 'What song would you like to queue?',
@@ -36,10 +43,10 @@ module.exports = class PlayCommand extends commando.Command {
     });
   }
 
-  async run(msg, { link }) {
+  async run(msg, { link, user }) {
     const url = link ? link.replace(/<(.+)>/g, '$1') : ''
     const searchString = link
-    const serverQueue = queue.get(msg.guild.id);
+    const userQueue = queue.get(user.id);
 
     if (url.match(/^https?:\/\/(www.youtube.com|youtube.com)\/playlist(.*)$/)) {
       msg.channel.send(`🆘 Playlists aren't supported.`)
@@ -83,27 +90,27 @@ module.exports = class PlayCommand extends commando.Command {
           return msg.delete()
         }
       }
-      handleVideo(video, msg)
+      handleVideo(video, user, msg)
       return msg.delete()
     }
 
-    async function handleVideo(video, msg) {
-      const serverQueue = queue.get(msg.guild.id);
+    async function handleVideo(video, user, msg) {
+      const userQueue = queue.get(user.id);
       const song = {
         id: video.id,
         title: Util.escapeMarkdown(video.title),
         url: `https://www.youtube.com/watch?v=${video.id}`,
       };
-      if (!serverQueue) {
+      if (!userQueue) {
         const queueConstruct = {
           songs: [],
           nowSinging: 'Nothing'
         };
-        queue.set(msg.guild.id, queueConstruct);
+        queue.set(user.id, queueConstruct);
     
         queueConstruct.songs.push(song);
       } else {
-        serverQueue.songs.push(song);
+        userQueue.songs.push(song);
       }
       return msg.channel.send(`✅ **${song.title}** has been added to the Eliza-Queue!`);
     }

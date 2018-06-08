@@ -20,15 +20,24 @@ module.exports = class NowSingingCommand extends commando.Command {
 			`,
       examples: ['ns', 'song'],
       guildOnly: true,
+      args: [
+        {
+          key: 'user',
+          label: 'user to view ns',
+          prompt: 'Who would you like to check the status of?',
+          type: 'user',
+          infinite: false
+        },
+      ],
     });
   }
 
-  async run(msg) {
-    const serverQueue = queue.get(msg.guild.id)
-    if (!serverQueue) {
-      return msg.channel.send('There is nothing playing.')
+  async run(msg, { user }) {
+    const userQueue = queue.get(user.id)
+    if (!userQueue) {
+      return msg.channel.send('There is nothing being sung.')
     }
-    msg.channel.send(`🎶 Now singing: **${serverQueue.nowSinging}**`)
+    msg.channel.send(`🎶 Now singing: **${userQueue.nowSinging}**`)
     return msg.delete()
   }
 };

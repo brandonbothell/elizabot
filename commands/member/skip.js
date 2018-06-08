@@ -24,16 +24,16 @@ module.exports = class SkipCommand extends commando.Command {
   }
 
   async run(msg) {
-    const serverQueue = queue.get(msg.guild.id);
+    const userQueue = queue.get(msg.author.id);
 
     if (!queue) {
-      msg.channel.send('There is nothing playing that I could skip for you.');
+      msg.channel.send('There is nothing being sung/in the queue that I could skip for you.');
       return msg.delete()
     }
-    if (serverQueue.nowSinging == 'Nothing') {
-      serverQueue.songs.shift()
+    if (userQueue.nowSinging == 'Nothing') {
+      userQueue.songs.shift()
     } else {
-      serverQueue.nowSinging = 'Nothing'
+      userQueue.nowSinging = 'Nothing'
     }
     return msg.delete()
   }

@@ -27,21 +27,21 @@ module.exports = class SingCommand extends commando.Command {
   }
 
   async run(msg) {
-    const serverQueue = queue.get(msg.guild.id);
+    const userQueue = queue.get(msg.author.id);
     let song
     try {
-      song = serverQueue.songs[0]
+      song = userQueue.songs[0]
       if (!song) {
         throw new Error('Oh no')
       }
     } catch (err) {
-      queue.delete(msg.guild.id);
-      msg.channel.send('There are no songs to play!')
+      queue.delete(msg.author.id);
+      msg.channel.send('There are no songs to sing!')
       return msg.delete()
     }
 
-    serverQueue.nowSinging = song.title
-    serverQueue.songs.shift()
+    userQueue.nowSinging = song.title
+    userQueue.songs.shift()
     msg.channel.send(`🎶 Start singing: **${song.title}**`);
     return msg.delete()
   }

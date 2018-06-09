@@ -20,17 +20,10 @@ module.exports = class QueueCommand extends commando.Command {
         This command is used to list every song currently
         in the Eliza-Queue.
 			`,
-      examples: ['queue', 'songs'],
+      examples: ['queue 1', 'songs 1 @Elizabell'],
       guildOnly: true,
 
       args: [
-        {
-          key: 'user',
-          label: 'user',
-          prompt: 'Who\'s queue would you like to look at?',
-          type: 'user',
-          infinite: false,
-        },
         {
           key: 'pageArg',
           label: 'page',
@@ -38,12 +31,23 @@ module.exports = class QueueCommand extends commando.Command {
           type: 'integer',
           infinite: false,
           default: 1
-        }
+        },
+        {
+          key: 'user',
+          label: 'user',
+          prompt: 'Who\'s queue would you like to look at?',
+          type: 'user',
+          infinite: false,
+          default: 'none',
+        },
       ]
     });
   }
 
   async run(msg, { pageArg, user }) {
+    if (user == 'none') {
+      user = msg.author
+    }
     let pageNum = pageArg
     const userQueue = queue.get(user.id);
     if (!userQueue) {

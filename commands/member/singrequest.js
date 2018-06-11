@@ -35,7 +35,7 @@ module.exports = class PlayCommand extends commando.Command {
         {
           key: 'link',
           label: 'youtube link or term',
-          prompt: 'What song would you like to queue?',
+          prompt: 'What song would you like to request?',
           type: 'string',
           infinite: false
         }
@@ -46,7 +46,8 @@ module.exports = class PlayCommand extends commando.Command {
   async run(msg, { link, user }) {
     const url = link ? link.replace(/<(.+)>/g, '$1') : ''
     const searchString = link
-    const userQueue = queue.get(user.id);
+    let searchResults
+    let response
 
     if (url.match(/^https?:\/\/(www.youtube.com|youtube.com)\/playlist(.*)$/)) {
       msg.channel.send(`🆘 Playlists aren't supported.`)
@@ -60,7 +61,7 @@ module.exports = class PlayCommand extends commando.Command {
           let index = 0;
           let realDesc = stripIndents`
             ${videos.map(video2 => `**${++index} -** ${video2.title}`).join('\n')}`
-          msg.channel.send(ec(
+          searchResults = msg.channel.send(ec(
             "#4286F4", { "name": msg.author.username, "icon_url": client.user.displayAvatarURL, "url": null }, 'Song Selection:', realDesc,
             [],
             { "text": `Please provide a value to select one of the search results ranging from 1-10.`, "icon_url": null },
@@ -68,21 +69,23 @@ module.exports = class PlayCommand extends commando.Command {
           ))
           // eslint-disable-next-line max-depth
           try {
-            var response = await msg.channel.awaitMessages(msg2 => msg2.content > 0 && msg2.content < 11, {
+            response = await msg.channel.awaitMessages(msg2 => msg2.content > 0 && msg2.content < 11, {
               maxMatches: 1,
               time: 10000,
               errors: ['time']
             });
           } catch (err) {
-            console.error(err);
+            console.error(err)
             msg.channel.send('No or invalid value entered, cancelling video selection.')
             try {
+              searchResults.delete()
               return msg.delete()
             } catch (err) {
               return
             }
           }
           const videoIndex = parseInt(response.first().content);
+          response.delete()
           var video = await youtube.getVideoByID(videos[videoIndex - 1].id);
         } catch (err) {
           console.error(err);

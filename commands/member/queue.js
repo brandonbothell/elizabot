@@ -1,11 +1,6 @@
 const commando = require('discord.js-commando');
-const oneLine = require('common-tags').oneLine;
 const stripIndents = require('common-tags').stripIndents;
 const { client, queue } = require('./../../bot.js')
-const ytdl = require('ytdl-core')
-const YouTube = require('simple-youtube-api')
-const { youtubeKey } = require('../../config')
-const youtube = new YouTube(youtubeKey)
 const ec = require('embed-creator')
 
 module.exports = class QueueCommand extends commando.Command {

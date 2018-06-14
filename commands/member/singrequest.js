@@ -1,9 +1,7 @@
 const commando = require('discord.js-commando');
 const Util = require('discord.js')
-const oneLine = require('common-tags').oneLine;
 const stripIndents = require('common-tags').stripIndents;
 const { client, queue } = require('../../bot.js')
-const ytdl = require('ytdl-core')
 const YouTube = require('simple-youtube-api')
 const { youtubeKey } = require('../../config')
 const youtube = new YouTube(youtubeKey)
@@ -120,7 +118,7 @@ module.exports = class PlayCommand extends commando.Command {
       } else {
         userQueue.songs.push(song);
       }
-      return msg.channel.send(`✅ **${song.title}** has been added to the Eliza-Queue!`);
+      return msg.channel.send(`✅ **${song.title}** has been added to the **${user.username}**'s Eliza-Queue!`);
     }
   }
 };

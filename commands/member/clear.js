@@ -1,8 +1,9 @@
-const commando = require('discord.js-commando');
+const commando = require('discord.js-commando')
+const oneLine = require('common-tags').oneLine
 const { queue } = require('./../../bot.js')
 
 module.exports = class StopCommand extends commando.Command {
-  constructor(client) {
+  constructor (client) {
     super(client, {
       name: 'stop',
       aliases: ['clearqueue'],
@@ -14,19 +15,19 @@ module.exports = class StopCommand extends commando.Command {
                 the current Eliza-queue.
 			`,
       examples: ['stop'],
-      guildOnly: true,
-    });
+      guildOnly: true
+    })
   }
 
-  async run(msg) {
-    const serverQueue = queue.get(msg.author.id);
+  async run (msg) {
+    const serverQueue = queue.get(msg.author.id)
 
     if (!serverQueue) {
       msg.channel.send('There is nothing in the queue that I could remove for you.')
       return msg.delete()
     }
     serverQueue.songs = []
-    msg.channel.send("Cleared the queue.")
+    msg.channel.send('Cleared the queue.')
     return msg.delete()
   }
-};
+}

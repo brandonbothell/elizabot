@@ -1,10 +1,11 @@
-const commando = require('discord.js-commando');
-const stripIndents = require('common-tags').stripIndents;
+const commando = require('discord.js-commando')
+const stripIndents = require('common-tags').stripIndents
+const oneLine = require('common-tags').oneLine
 const { client, queue } = require('./../../bot.js')
 const ec = require('embed-creator')
 
 module.exports = class QueueCommand extends commando.Command {
-  constructor(client) {
+  constructor (client) {
     super(client, {
       name: 'queue',
       aliases: ['songs', 'eliza-queue'],
@@ -33,20 +34,20 @@ module.exports = class QueueCommand extends commando.Command {
           prompt: 'Who\'s queue would you like to look at?',
           type: 'user',
           infinite: false,
-          default: 'none',
-        },
+          default: 'none'
+        }
       ]
-    });
+    })
   }
 
-  async run(msg, { pageArg, user }) {
+  async run (msg, { pageArg, user }) {
     if (user == 'none') {
       user = msg.author
     }
     let pageNum = pageArg
-    const userQueue = queue.get(user.id);
+    const userQueue = queue.get(user.id)
     if (!userQueue) {
-      msg.channel.send('There is nothing to show here.');
+      msg.channel.send('There is nothing to show here.')
       return msg.delete()
     }
     let songs = userQueue.songs.map(song => `**-** [${song.title}](${song.url})`)
@@ -54,9 +55,9 @@ module.exports = class QueueCommand extends commando.Command {
     let page = 1
     for (let i = 0; i < songs.length; i++) {
       if (pages.has(page)) {
-        pages.set(page, pages.get(page) + songs[i] + "\n")
+        pages.set(page, pages.get(page) + songs[i] + '\n')
       } else {
-        pages.set(page, songs[i] + "\n")
+        pages.set(page, songs[i] + '\n')
       }
       if ((i + 1) % 10 == 0) {
         page = page + 1
@@ -70,11 +71,11 @@ module.exports = class QueueCommand extends commando.Command {
 			${pages.get(pageNum)}
 			**Now singing:** ${userQueue.nowSinging}`
     msg.channel.send(ec(
-      "#4286F4", { "name": msg.author.username, "icon_url": client.user.displayAvatarURL, "url": null }, `${user.username}'s Queue:`, realDesc,
+      '#4286F4', { 'name': msg.author.username, 'icon_url': client.user.displayAvatarURL, 'url': null }, `${user.username}'s Queue:`, realDesc,
       [],
-      { "text": `Page ${pageNum}/${pages.size}. View different pages with ${msg.guild.commandPrefix}queue [number].`, "icon_url": null },
-      { "thumbnail": null, "image": null }, false
+      { 'text': `Page ${pageNum}/${pages.size}. View different pages with ${msg.guild.commandPrefix}queue [number].`, 'icon_url': null },
+      { 'thumbnail': null, 'image': null }, false
     ))
     return msg.delete()
   }
-};
+}

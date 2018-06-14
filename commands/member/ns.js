@@ -1,8 +1,9 @@
-const commando = require('discord.js-commando');
+const commando = require('discord.js-commando')
+const oneLine = require('common-tags').oneLine
 const { queue } = require('./../../bot.js')
 
 module.exports = class NowSingingCommand extends commando.Command {
-  constructor(client) {
+  constructor (client) {
     super(client, {
       name: 'ns',
       aliases: ['nowsinging', 'current', 'song'],
@@ -22,12 +23,12 @@ module.exports = class NowSingingCommand extends commando.Command {
           prompt: 'Who would you like to check the status of?',
           type: 'user',
           infinite: false
-        },
-      ],
-    });
+        }
+      ]
+    })
   }
 
-  async run(msg, { user }) {
+  async run (msg, { user }) {
     const userQueue = queue.get(user.id)
     if (!userQueue) {
       return msg.channel.send('There is nothing being sung.')
@@ -35,4 +36,4 @@ module.exports = class NowSingingCommand extends commando.Command {
     msg.channel.send(`🎶 Now singing: **${userQueue.nowSinging}**`)
     return msg.delete()
   }
-};
+}

@@ -1,8 +1,9 @@
-const commando = require('discord.js-commando');
+const commando = require('discord.js-commando')
+const oneLine = require('common-tags').oneLine
 const { queue } = require('./../../bot.js')
 
 module.exports = class SkipCommand extends commando.Command {
-  constructor(client) {
+  constructor (client) {
     super(client, {
       name: 'skip',
       aliases: ['skipsong'],
@@ -14,15 +15,15 @@ module.exports = class SkipCommand extends commando.Command {
         of songs.
 			`,
       examples: ['skip'],
-      guildOnly: true,
-    });
+      guildOnly: true
+    })
   }
 
-  async run(msg) {
-    const userQueue = queue.get(msg.author.id);
+  async run (msg) {
+    const userQueue = queue.get(msg.author.id)
 
     if (!queue) {
-      msg.channel.send('There is nothing being sung/in the queue that I could skip for you.');
+      msg.channel.send('There is nothing being sung/in the queue that I could skip for you.')
       return msg.delete()
     }
     try {
@@ -34,4 +35,4 @@ module.exports = class SkipCommand extends commando.Command {
     } catch (err) {}
     return msg.delete()
   }
-};
+}

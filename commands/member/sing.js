@@ -1,7 +1,8 @@
-const commando = require('discord.js-commando');
+const commando = require('discord.js-commando')
+const oneLine = require('common-tags').oneLine
 
 module.exports = class SingCommand extends commando.Command {
-  constructor(client) {
+  constructor (client) {
     super(client, {
       name: 'sing',
       aliases: ['singsong', 'next'],
@@ -13,12 +14,12 @@ module.exports = class SingCommand extends commando.Command {
                 the Eliza-queue.
 			`,
       examples: ['sing', 'next'],
-      guildOnly: true,
-    });
+      guildOnly: true
+    })
   }
 
-  async run(msg) {
-    const userQueue = queue.get(msg.author.id);
+  async run (msg) {
+    const userQueue = queue.get(msg.author.id)
     let song
     try {
       song = userQueue.songs[0]
@@ -26,14 +27,14 @@ module.exports = class SingCommand extends commando.Command {
         throw new Error('Oh no')
       }
     } catch (err) {
-      queue.delete(msg.author.id);
+      queue.delete(msg.author.id)
       msg.channel.send('There are no songs to sing!')
       return msg.delete()
     }
 
     userQueue.nowSinging = song.title
     userQueue.songs.shift()
-    msg.channel.send(`🎶 Start singing: **${song.title}**`);
+    msg.channel.send(`🎶 Start singing: **${song.title}**`)
     return msg.delete()
   }
-};
+}

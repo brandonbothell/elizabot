@@ -1,6 +1,7 @@
-const commando = require('discord.js-commando');
+const commando = require('discord.js-commando')
+const oneLine = require('common-tags').oneLine
 const Util = require('discord.js')
-const stripIndents = require('common-tags').stripIndents;
+const stripIndents = require('common-tags').stripIndents
 const { client, queue } = require('../../bot.js')
 const YouTube = require('simple-youtube-api')
 const { youtubeKey } = require('../../config')
@@ -8,7 +9,7 @@ const youtube = new YouTube(youtubeKey)
 const ec = require('embed-creator')
 
 module.exports = class PlayCommand extends commando.Command {
-  constructor(client) {
+  constructor (client) {
     super(client, {
       name: 'singrequest',
       aliases: ['play'],
@@ -38,10 +39,10 @@ module.exports = class PlayCommand extends commando.Command {
           infinite: false
         }
       ]
-    });
+    })
   }
 
-  async run(msg, { link, user }) {
+  async run (msg, { link, user }) {
     const url = link ? link.replace(/<(.+)>/g, '$1') : ''
     const searchString = link
     let searchResults
@@ -52,18 +53,18 @@ module.exports = class PlayCommand extends commando.Command {
       return msg.delete()
     } else {
       try {
-        var video = await youtube.getVideo(url);
+        var video = await youtube.getVideo(url)
       } catch (error) {
         try {
-          var videos = await youtube.searchVideos(searchString, 10);
-          let index = 0;
+          var videos = await youtube.searchVideos(searchString, 10)
+          let index = 0
           let realDesc = stripIndents`
             ${videos.map(video2 => `**${++index} -** ${video2.title}`).join('\n')}`
           searchResults = msg.channel.send(ec(
-            "#4286F4", { "name": msg.author.username, "icon_url": client.user.displayAvatarURL, "url": null }, 'Song Selection:', realDesc,
+            '#4286F4', { 'name': msg.author.username, 'icon_url': client.user.displayAvatarURL, 'url': null }, 'Song Selection:', realDesc,
             [],
-            { "text": `Please provide a value to select one of the search results ranging from 1-10.`, "icon_url": null },
-            { "thumbnail": null, "image": null }, false
+            { 'text': `Please provide a value to select one of the search results ranging from 1-10.`, 'icon_url': null },
+            { 'thumbnail': null, 'image': null }, false
           ))
           // eslint-disable-next-line max-depth
           try {
@@ -71,7 +72,7 @@ module.exports = class PlayCommand extends commando.Command {
               maxMatches: 1,
               time: 10000,
               errors: ['time']
-            });
+            })
           } catch (err) {
             console.error(err)
             msg.channel.send('No or invalid value entered, cancelling video selection.')
@@ -82,11 +83,11 @@ module.exports = class PlayCommand extends commando.Command {
               return
             }
           }
-          const videoIndex = parseInt(response.first().content);
+          const videoIndex = parseInt(response.first().content)
           response.delete()
-          var video = await youtube.getVideoByID(videos[videoIndex - 1].id);
+          var video = await youtube.getVideoByID(videos[videoIndex - 1].id)
         } catch (err) {
-          console.error(err);
+          console.error(err)
           msg.channel.send('🆘 I could not obtain any search results.')
           return msg.delete()
         }
@@ -100,25 +101,25 @@ module.exports = class PlayCommand extends commando.Command {
       return msg.delete()
     }
 
-    async function handleVideo(video, user, msg) {
-      const userQueue = queue.get(user.id);
+    async function handleVideo (video, user, msg) {
+      const userQueue = queue.get(user.id)
       const song = {
         id: video.id,
         title: Util.escapeMarkdown(video.title),
-        url: `https://www.youtube.com/watch?v=${video.id}`,
-      };
+        url: `https://www.youtube.com/watch?v=${video.id}`
+      }
       if (!userQueue) {
         const queueConstruct = {
           songs: [],
           nowSinging: 'Nothing'
-        };
-        queue.set(user.id, queueConstruct);
-    
-        queueConstruct.songs.push(song);
+        }
+        queue.set(user.id, queueConstruct)
+
+        queueConstruct.songs.push(song)
       } else {
-        userQueue.songs.push(song);
+        userQueue.songs.push(song)
       }
-      return msg.channel.send(`✅ **${song.title}** has been added to the **${user.username}**'s Eliza-Queue!`);
+      return msg.channel.send(`✅ **${song.title}** has been added to the **${user.username}**'s Eliza-Queue!`)
     }
   }
-};
+}

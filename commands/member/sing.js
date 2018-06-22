@@ -29,12 +29,22 @@ module.exports = class SingCommand extends commando.Command {
     } catch (err) {
       queue.delete(msg.author.id)
       msg.channel.send('There are no songs to sing!')
-      return msg.delete()
+      try {
+        msg.delete()
+        return undefined
+      } catch (err) {
+        return console.log(err)
+      }
     }
 
     userQueue.nowSinging = song.title
     userQueue.songs.shift()
     msg.channel.send(`🎶 Start singing: **${song.title}**`)
-    return msg.delete()
+    try {
+      msg.delete()
+      return undefined
+    } catch (err) {
+      return console.log(err)
+    }
   }
 }

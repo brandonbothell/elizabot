@@ -24,10 +24,20 @@ module.exports = class StopCommand extends commando.Command {
 
     if (!serverQueue) {
       msg.channel.send('There is nothing in the queue that I could remove for you.')
-      return msg.delete()
+      try {
+        msg.delete()
+        return undefined
+      } catch (err) {
+        return console.log(err)
+      }
     }
     serverQueue.songs = []
     msg.channel.send('Cleared the queue.')
-    return msg.delete()
+    try {
+      msg.delete()
+      return undefined
+    } catch (err) {
+      return console.log(err)
+    }
   }
 }

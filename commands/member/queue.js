@@ -48,7 +48,12 @@ module.exports = class QueueCommand extends commando.Command {
     const userQueue = queue.get(user.id)
     if (!userQueue) {
       msg.channel.send('There is nothing to show here.')
-      return msg.delete()
+      try {
+        msg.delete()
+        return undefined
+      } catch (err) {
+        return console.log(err)
+      }
     }
     let songs = userQueue.songs.map(song => `**-** [${song.title}](${song.url})`)
     let pages = new Map()
@@ -65,7 +70,12 @@ module.exports = class QueueCommand extends commando.Command {
     }
     if (pages.get(pageNum) == undefined) {
       msg.channel.send("There aren't that many pages!")
-      return msg.delete()
+      try {
+        msg.delete()
+        return undefined
+      } catch (err) {
+        return console.log(err)
+      }
     }
     let realDesc = stripIndents`
 			${pages.get(pageNum)}
@@ -76,6 +86,11 @@ module.exports = class QueueCommand extends commando.Command {
       { 'text': `Page ${pageNum}/${pages.size}. View different pages with ${msg.guild.commandPrefix}queue [number].`, 'icon_url': null },
       { 'thumbnail': null, 'image': null }, false
     ))
-    return msg.delete()
+    try {
+      msg.delete()
+      return undefined
+    } catch (err) {
+      return console.log(err)
+    }
   }
 }

@@ -24,7 +24,12 @@ module.exports = class SkipCommand extends commando.Command {
 
     if (!queue) {
       msg.channel.send('There is nothing being sung/in the queue that I could skip for you.')
-      return msg.delete()
+      try {
+        msg.delete()
+        return undefined
+      } catch (err) {
+        return console.log(err)
+      }
     }
     try {
       if (userQueue.nowSinging == 'Nothing') {
@@ -33,6 +38,11 @@ module.exports = class SkipCommand extends commando.Command {
         userQueue.nowSinging = 'Nothing'
       }
     } catch (err) {}
-    return msg.delete()
+    try {
+      msg.delete()
+      return undefined
+    } catch (err) {
+      return console.log(err)
+    }
   }
 }

@@ -34,6 +34,11 @@ module.exports = class NowSingingCommand extends commando.Command {
       return msg.channel.send('There is nothing being sung.')
     }
     msg.channel.send(`🎶 Now singing: **${userQueue.nowSinging}**`)
-    return msg.delete()
+    try {
+      msg.delete()
+      return undefined
+    } catch (err) {
+      return console.log(err)
+    }
   }
 }

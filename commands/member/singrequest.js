@@ -50,7 +50,12 @@ module.exports = class PlayCommand extends commando.Command {
 
     if (url.match(/^https?:\/\/(www.youtube.com|youtube.com)\/playlist(.*)$/)) {
       msg.channel.send(`🆘 Playlists aren't supported.`)
-      return msg.delete()
+      try {
+        msg.delete()
+        return undefined
+      } catch (err) {
+        return console.log(err)
+      }
     } else {
       try {
         var video = await youtube.getVideo(url)
@@ -78,9 +83,10 @@ module.exports = class PlayCommand extends commando.Command {
             msg.channel.send('No or invalid value entered, cancelling video selection.')
             try {
               searchResults.delete()
-              return msg.delete()
+              msg.delete()
+              return undefined
             } catch (err) {
-              return
+              return console.log(err)
             }
           }
           const videoIndex = parseInt(response.first().content)
@@ -89,16 +95,25 @@ module.exports = class PlayCommand extends commando.Command {
         } catch (err) {
           console.error(err)
           msg.channel.send('🆘 I could not obtain any search results.')
-          return msg.delete()
+          try {
+            msg.delete()
+            return undefined
+          } catch (err) {
+            return console.log(err)
+          }
         }
       }
       handleVideo(video, user, msg)
       try {
         user.send(`**${msg.author.username}** has requested for you to sing **${Util.escapeMarkdown(video.title)}** in **${msg.guild.name}**.`)
       } catch (err) {
-
       }
-      return msg.delete()
+      try {
+        msg.delete()
+        return undefined
+      } catch (err) {
+        return console.log(err)
+      }
     }
 
     async function handleVideo (video, user, msg) {
